@@ -19,5 +19,6 @@ class Category extends Model
     {
         return $this->hasMany(Doctor::class);
     }
-}
 
+    
+}
