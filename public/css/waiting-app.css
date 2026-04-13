@@ -1,0 +1,189 @@
+/* Waiting App UI theme (shared across pages) */
+:root{
+  --wa-bg: #f7f8ff;
+  --wa-surface: #ffffff;
+  --wa-text: #0f172a;
+  --wa-muted: #64748b;
+  --wa-border: rgba(15, 23, 42, 0.10);
+
+  --wa-primary: #4f46e5;     /* indigo */
+  --wa-primary-2: #4338ca;   /* deeper indigo */
+  --wa-accent: #14b8a6;      /* teal */
+  --wa-info: #06b6d4;        /* cyan */
+  --wa-success: #16a34a;
+  --wa-warning: #f59e0b;
+  --wa-danger: #ef4444;
+
+  --wa-radius-lg: 16px;
+  --wa-radius-md: 12px;
+  --wa-pill: 999px;
+
+  --wa-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+  --wa-shadow-soft: 0 10px 26px rgba(15, 23, 42, 0.06);
+}
+
+/* Base */
+body{
+  color: var(--wa-text);
+}
+.wa-page{
+  min-height: 100vh;
+  background: radial-gradient(1200px 520px at 50% 0%, rgba(79,70,229,.14) 0%, rgba(20,184,166,.10) 35%, #ffffff 78%);
+}
+.wa-container{
+  max-width: 980px;
+}
+.wa-muted{ color: var(--wa-muted) !important; }
+.wa-pill{ border-radius: var(--wa-pill) !important; }
+.wa-radius-lg{ border-radius: var(--wa-radius-lg) !important; }
+.wa-radius-md{ border-radius: var(--wa-radius-md) !important; }
+
+/* Cards */
+.wa-card{
+  background: var(--wa-surface);
+  border: 1px solid var(--wa-border);
+  border-radius: var(--wa-radius-lg);
+  box-shadow: var(--wa-shadow-soft);
+}
+.wa-card-hero{
+  border: 0;
+  box-shadow: var(--wa-shadow);
+}
+
+/* Auth / public page hero accent blocks */
+.wa-hero-icon{
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  box-shadow: 0 14px 26px rgba(15, 23, 42, 0.18);
+}
+.wa-hero-icon.wa-hero-icon-patient{
+  background: linear-gradient(135deg, var(--wa-accent) 0%, var(--wa-info) 100%);
+}
+.wa-hero-icon.wa-hero-icon-admin{
+  background: linear-gradient(135deg, var(--wa-primary-2) 0%, var(--wa-primary) 65%, var(--wa-accent) 120%);
+}
+
+/* Inputs + buttons */
+.wa-input,
+.wa-select,
+.wa-btn{
+  border-radius: var(--wa-radius-md) !important;
+}
+.wa-input:focus,
+.wa-select:focus{
+  box-shadow: 0 0 0 .25rem rgba(79,70,229,.14) !important;
+  border-color: rgba(79,70,229,.48) !important;
+}
+.wa-btn-primary{
+  border: 0 !important;
+  background: linear-gradient(135deg, var(--wa-primary) 0%, var(--wa-accent) 100%) !important;
+  box-shadow: 0 12px 26px rgba(79,70,229,0.22);
+}
+.wa-btn-primary:hover{ filter: brightness(1.03); }
+.wa-btn-ghost{
+  background: rgba(255,255,255,0.78) !important;
+  border: 1px solid var(--wa-border) !important;
+}
+.wa-btn-ghost:hover{
+  background: rgba(255,255,255,0.95) !important;
+}
+
+/* Topbar (admin console) */
+.wa-topbar{
+  background: linear-gradient(90deg, var(--wa-primary-2) 0%, var(--wa-primary) 55%, rgba(20,184,166,1) 100%);
+  box-shadow: 0 12px 34px rgba(67, 56, 202, 0.20);
+}
+.wa-brand{
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #fff !important;
+  text-decoration: none !important;
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+}
+
+/* Badges */
+.wa-token{
+  background: linear-gradient(135deg, var(--wa-primary) 0%, var(--wa-accent) 100%) !important;
+  color: #fff !important;
+}
+.wa-status-waiting{ background: rgba(245,158,11,.15) !important; color: #92400e !important; }
+.wa-status-serving{ background: rgba(37,99,235,.15) !important; color: #1d4ed8 !important; }
+.wa-status-done{ background: rgba(22,163,74,.15) !important; color: #166534 !important; }
+.wa-status-no-show{ background: rgba(100,116,139,.16) !important; color: #334155 !important; }
+
+/* Tables */
+.wa-table thead th{
+  border-top: 0 !important;
+  color: var(--wa-muted);
+  font-weight: 800;
+  font-size: .85rem;
+  letter-spacing: .02em;
+}
+.wa-table tbody td{ vertical-align: middle; }
+.wa-table tbody tr:hover{ background: rgba(79,70,229,0.035); }
+
+/* Ticket token block */
+.wa-token-box{
+  background: linear-gradient(135deg, var(--wa-primary) 0%, var(--wa-accent) 100%);
+  color: #fff;
+  border-radius: var(--wa-radius-lg);
+  padding: 20px;
+}
+.wa-token-num{
+  font-size: 2.35rem;
+  font-weight: 900;
+  letter-spacing: .10em;
+}
+
+/* Sidebar (admin console) */
+.wa-sidebar{
+  background: linear-gradient(180deg, #0b1220 0%, #111b34 50%, #0b1220 100%) !important;
+  border-right: 1px solid rgba(255,255,255,.08) !important;
+}
+.wa-sidebar .sidebar-brand,
+.wa-sidebar .sidebar-brand-sm{
+  background: transparent !important;
+}
+.wa-sidebar .sidebar-brand a,
+.wa-sidebar .sidebar-brand-sm a{
+  color: #fff !important;
+  font-weight: 900;
+  letter-spacing: .02em;
+}
+.wa-sidebar .menu-header{
+  color: rgba(255,255,255,.65) !important;
+  letter-spacing: .08em;
+  font-weight: 800 !important;
+}
+.wa-sidebar .sidebar-menu > li > a{
+  color: rgba(255,255,255,.86) !important;
+  border-radius: 12px;
+  margin: 2px 12px;
+  padding: 10px 12px;
+  transition: background .18s ease, color .18s ease, transform .18s ease;
+}
+.wa-sidebar .sidebar-menu > li > a i{
+  color: rgba(255,255,255,.75) !important;
+}
+.wa-sidebar .sidebar-menu > li > a:hover{
+  background: rgba(255,255,255,.08) !important;
+  color: #fff !important;
+  transform: translateX(2px);
+}
+.wa-sidebar .sidebar-menu > li.active > a,
+.wa-sidebar .sidebar-menu > li.active > a:hover{
+  background: linear-gradient(135deg, rgba(79,70,229,.95) 0%, rgba(20,184,166,.90) 100%) !important;
+  color: #fff !important;
+  box-shadow: 0 14px 26px rgba(0,0,0,.22);
+}
+.wa-sidebar .sidebar-menu > li.active > a i{
+  color: #fff !important;
+}
+
