@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Category;
+use App\Models\Department;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -23,12 +23,12 @@ class UserSeeder extends Seeder
                 'name' => 'Clinic Admin',
                 'password' => Hash::make($defaultPassword),
                 'is_super_admin' => true,
-                'category_id' => null,
+                'department_id' => null,
             ]
         );
 
         // Create one department-scoped admin per active department.
-        $departments = Category::query()
+        $departments = Department::query()
             ->where('is_active', true)
             ->orderBy('name')
             ->get(['id', 'name']);
@@ -43,7 +43,7 @@ class UserSeeder extends Seeder
                     'name' => $dept->name.' Admin',
                     'password' => Hash::make($defaultPassword),
                     'is_super_admin' => false,
-                    'category_id' => (int) $dept->id,
+                    'department_id' => (int) $dept->id,
                 ]
             );
         }

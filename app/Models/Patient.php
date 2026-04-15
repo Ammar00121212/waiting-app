@@ -19,7 +19,7 @@ class Patient extends Model
         'address',
         'token_number',
         'patient_name',
-        'category_id',
+        'department_id',
         'doctor_id',
         'status',
         'serving_started_at',
@@ -33,9 +33,9 @@ class Patient extends Model
         'actual_service_minutes' => 'integer',
     ];
 
-    public function category()
+    public function department()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Department::class);
     }
 
     public function doctor()
@@ -48,20 +48,20 @@ class Patient extends Model
      *
      * @return array{0: int, 1: int}|null
      */
-    public static function resolveDefaultCategoryAndDoctor(): ?array
+    public static function resolveDefaultDepartmentAndDoctor(): ?array
     {
-        $category = Category::query()
+        $department = Department::query()
             ->where('is_active', true)
             ->orderBy('id')
             ->first()
-            ?? Category::query()->orderBy('id')->first();
+            ?? Department::query()->orderBy('id')->first();
 
-        if ($category === null) {
+        if ($department === null) {
             return null;
         }
 
         $doctor = Doctor::query()
-            ->where('category_id', $category->id)
+            ->where('department_id', $department->id)
             ->where('is_active', true)
             ->orderBy('id')
             ->first();
@@ -70,7 +70,7 @@ class Patient extends Model
             return null;
         }
 
-        return [(int) $category->id, (int) $doctor->id];
+        return [(int) $department->id, (int) $doctor->id];
     }
 
     /**

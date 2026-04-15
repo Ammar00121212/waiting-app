@@ -10,7 +10,7 @@ class Doctor extends Model
     use HasFactory;
 
     protected $fillable = [
-        'category_id',
+        'department_id',
         'name',
         'email',
         'phone',
@@ -23,8 +23,8 @@ class Doctor extends Model
         'is_active' => 'boolean',
     ];
 
-    public function category()
+    public function department()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Department::class);
     }
 }

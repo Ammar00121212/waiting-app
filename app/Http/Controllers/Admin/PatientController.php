@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
+use App\Models\Department;
 use App\Models\Doctor;
 use App\Models\Patient;
 use App\Services\QueueService;
@@ -23,13 +23,13 @@ class PatientController extends Controller
     public function index()
     {
         $user = request()->user();
-        $categoryScopeId = ($user && ! $user->is_super_admin) ? (int) $user->category_id : null;
+        $departmentScopeId = ($user && ! $user->is_super_admin) ? (int) $user->department_id : null;
         $q = trim((string) request()->query('q', ''));
         $status = trim((string) request()->query('status', ''));
 
         $patients = Patient::query()
-            ->with(['doctor', 'category'])
-            ->when($categoryScopeId, fn ($q) => $q->where('category_id', $categoryScopeId))
+            ->with(['doctor', 'department'])
+            ->when($departmentScopeId, fn ($q) => $q->where('department_id', $departmentScopeId))
             ->when($status !== '', fn ($query) => $query->where('status', $status))
             ->when($q !== '', function ($query) use ($q) {
                 $query->where(function ($sub) use ($q) {
@@ -43,9 +43,9 @@ class PatientController extends Controller
             ->paginate(15)
             ->withQueryString();
 
-        $categories = Category::query()
+        $categories = Department::query()
             ->where('is_active', true)
-            ->when($categoryScopeId, fn ($q) => $q->where('id', $categoryScopeId))
+            ->when($departmentScopeId, fn ($q) => $q->where('id', $departmentScopeId))
             ->orderBy('name')
             ->get(['id', 'name']);
 
@@ -55,39 +55,39 @@ class PatientController extends Controller
     public function store(Request $request)
     {
         $user = $request->user();
-        $categoryScopeId = ($user && ! $user->is_super_admin) ? (int) $user->category_id : null;
+        $departmentScopeId = ($user && ! $user->is_super_admin) ? (int) $user->department_id : null;
 
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:50'],
-            'category_id' => ['required', 'exists:categories,id'],
+            'department_id' => ['required', 'exists:departments,id'],
             'doctor_id' => ['required', 'exists:doctors,id'],
         ]);
 
-        if ($categoryScopeId && (int) $data['category_id'] !== $categoryScopeId) {
+        if ($departmentScopeId && (int) $data['department_id'] !== $departmentScopeId) {
             throw ValidationException::withMessages([
-                'category_id' => __('You can only register patients in your department.'),
+                'department_id' => __('You can only register patients in your department.'),
             ]);
         }
 
-        $category = Category::query()
-            ->where('id', $data['category_id'])
+        $department = Department::query()
+            ->where('id', $data['department_id'])
             ->where('is_active', true)
             ->first();
-        if ($category === null) {
+        if ($department === null) {
             throw ValidationException::withMessages([
-                'category_id' => __('Please select a valid category.'),
+                'department_id' => __('Please select a valid department.'),
             ]);
         }
 
         $doctor = Doctor::query()
             ->where('id', $data['doctor_id'])
-            ->where('category_id', $category->id)
+            ->where('department_id', $department->id)
             ->where('is_active', true)
             ->first();
         if ($doctor === null) {
             throw ValidationException::withMessages([
-                'doctor_id' => __('Please select an available doctor for the chosen category.'),
+                'doctor_id' => __('Please select an available doctor for the chosen department.'),
             ]);
         }
 
@@ -106,7 +106,7 @@ class PatientController extends Controller
             'name' => $data['name'],
             'patient_name' => $data['name'],
             'phone' => $data['phone'] ?? null,
-            'category_id' => $category->id,
+            'department_id' => $department->id,
             'doctor_id' => $doctor->id,
             'status' => 'waiting',
             'token_number' => $tokenNumber,
@@ -135,10 +135,10 @@ class PatientController extends Controller
     public function update(Request $request, Patient $patient)
     {
         $user = $request->user();
-        $scopeCategoryId = ($user && ! $user->is_super_admin && ! is_null($user->category_id))
-            ? (int) $user->category_id
+        $scopeDepartmentId = ($user && ! $user->is_super_admin && ! is_null($user->department_id))
+            ? (int) $user->department_id
             : null;
-        if (! is_null($scopeCategoryId) && (int) $patient->category_id !== $scopeCategoryId) {
+        if (! is_null($scopeDepartmentId) && (int) $patient->department_id !== $scopeDepartmentId) {
             $msg = 'You can only update patients in your own department.';
             if ($request->expectsJson()) {
                 return response()->json(['message' => $msg], 403);
@@ -213,10 +213,10 @@ class PatientController extends Controller
     public function destroy(Request $request, Patient $patient)
     {
         $user = request()->user();
-        $scopeCategoryId = ($user && ! $user->is_super_admin && ! is_null($user->category_id))
-            ? (int) $user->category_id
+        $scopeDepartmentId = ($user && ! $user->is_super_admin && ! is_null($user->department_id))
+            ? (int) $user->department_id
             : null;
-        if (! is_null($scopeCategoryId) && (int) $patient->category_id !== $scopeCategoryId) {
+        if (! is_null($scopeDepartmentId) && (int) $patient->department_id !== $scopeDepartmentId) {
             $msg = 'You can only remove patients in your own department.';
             if ($request->expectsJson()) {
                 return response()->json(['message' => $msg], 403);
@@ -261,15 +261,15 @@ class PatientController extends Controller
             ->with('success', 'All patients have been cleared. New registrations will start at T-001 for today.');
     }
 
-    public function doctorsByCategory(Category $category)
+    public function doctorsByCategory(Department $category)
     {
         $user = request()->user();
-        if ($user && ! $user->is_super_admin && (int) $user->category_id !== (int) $category->id) {
+        if ($user && ! $user->is_super_admin && (int) $user->department_id !== (int) $category->id) {
             return response()->json([], 403);
         }
 
         $doctors = Doctor::query()
-            ->where('category_id', $category->id)
+            ->where('department_id', $category->id)
             ->where('is_active', true)
             ->orderBy('name')
             ->get(['id', 'name']);

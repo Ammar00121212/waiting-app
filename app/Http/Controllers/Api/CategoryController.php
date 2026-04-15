@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Category;
+use App\Models\Department;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -13,7 +13,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::orderBy('name')->paginate(10);
+        $categories = Department::orderBy('name')->paginate(10);
 
         return response()->json($categories);
     }
@@ -31,7 +31,7 @@ class CategoryController extends Controller
 
         $data['is_active'] = $request->boolean('is_active');
 
-        $category = Category::create($data);
+        $category = Department::create($data);
 
         return response()->json($category, 201);
     }
@@ -39,7 +39,7 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Category $category)
+    public function show(Department $category)
     {
         return response()->json($category);
     }
@@ -47,7 +47,7 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Category $category)
+    public function update(Request $request, Department $category)
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -65,7 +65,7 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category)
+    public function destroy(Department $category)
     {
         $category->delete();
 

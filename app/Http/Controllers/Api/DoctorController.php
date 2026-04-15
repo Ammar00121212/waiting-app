@@ -13,7 +13,7 @@ class DoctorController extends Controller
      */
     public function index()
     {
-        $doctors = Doctor::with('category')
+        $doctors = Doctor::with('department')
             ->orderBy('name')
             ->paginate(10);
 
@@ -27,7 +27,7 @@ class DoctorController extends Controller
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'category_id' => ['required', 'exists:categories,id'],
+            'department_id' => ['required', 'exists:departments,id'],
             'email' => ['nullable', 'email', 'max:255'],
             'phone' => ['nullable', 'string', 'max:50'],
             'room_number' => ['nullable', 'string', 'max:50'],
@@ -38,7 +38,7 @@ class DoctorController extends Controller
 
         $doctor = Doctor::create($data);
 
-        return response()->json($doctor->load('category'), 201);
+        return response()->json($doctor->load('department'), 201);
     }
 
     /**
@@ -46,7 +46,7 @@ class DoctorController extends Controller
      */
     public function show(Doctor $doctor)
     {
-        return response()->json($doctor->load('category'));
+        return response()->json($doctor->load('department'));
     }
 
     /**
@@ -56,7 +56,7 @@ class DoctorController extends Controller
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'category_id' => ['required', 'exists:categories,id'],
+            'department_id' => ['required', 'exists:departments,id'],
             'email' => ['nullable', 'email', 'max:255'],
             'phone' => ['nullable', 'string', 'max:50'],
             'room_number' => ['nullable', 'string', 'max:50'],
@@ -67,7 +67,7 @@ class DoctorController extends Controller
 
         $doctor->update($data);
 
-        return response()->json($doctor->load('category'));
+        return response()->json($doctor->load('department'));
     }
 
     /**

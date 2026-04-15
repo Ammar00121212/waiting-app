@@ -18,7 +18,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'category_id',
+        'department_id',
         'name',
         'email',
         'password',
@@ -46,8 +46,8 @@ class User extends Authenticatable
         'is_super_admin' => 'boolean',
     ];
 
-    public function category()
+    public function department()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Department::class);
     }
 }

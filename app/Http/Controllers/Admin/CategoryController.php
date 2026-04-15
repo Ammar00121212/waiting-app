@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
+use App\Models\Department;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -14,10 +14,10 @@ class CategoryController extends Controller
     public function index()
     {
         $user = request()->user();
-        $categoryScopeId = ($user && ! $user->is_super_admin) ? (int) $user->category_id : null;
+        $departmentScopeId = ($user && ! $user->is_super_admin) ? (int) $user->department_id : null;
 
-        $categories = Category::query()
-            ->when($categoryScopeId, fn ($q) => $q->where('id', $categoryScopeId))
+        $categories = Department::query()
+            ->when($departmentScopeId, fn ($q) => $q->where('id', $departmentScopeId))
             ->orderBy('name')
             ->paginate(10);
 
@@ -45,19 +45,19 @@ class CategoryController extends Controller
 
         $data['is_active'] = $request->boolean('is_active');
 
-        $category = Category::create($data);
+        $department = Department::create($data);
 
         if ($request->expectsJson()) {
             return response()->json([
                 'message' => 'Department created successfully.',
                 'category' => [
-                    'id' => $category->id,
-                    'name' => $category->name,
-                    'description' => $category->description,
-                    'is_active' => (bool) $category->is_active,
-                    'created_at' => optional($category->created_at)->format('Y-m-d'),
-                    'edit_url' => route('admin.categories.edit', $category),
-                    'destroy_url' => route('admin.categories.destroy', $category),
+                    'id' => $department->id,
+                    'name' => $department->name,
+                    'description' => $department->description,
+                    'is_active' => (bool) $department->is_active,
+                    'created_at' => optional($department->created_at)->format('Y-m-d'),
+                    'edit_url' => route('admin.categories.edit', $department),
+                    'destroy_url' => route('admin.categories.destroy', $department),
                 ],
             ], 201);
         }
@@ -68,10 +68,10 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Category $category)
+    public function edit(Department $category)
     {
         $user = request()->user();
-        if ($user && ! $user->is_super_admin && (int) $user->category_id !== (int) $category->id) {
+        if ($user && ! $user->is_super_admin && (int) $user->department_id !== (int) $category->id) {
             return redirect()
                 ->route('admin.categories.index')
                 ->with('error', 'You can only access your own department.');
@@ -83,10 +83,10 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Category $category)
+    public function update(Request $request, Department $category)
     {
         $user = $request->user();
-        if ($user && ! $user->is_super_admin && (int) $user->category_id !== (int) $category->id) {
+        if ($user && ! $user->is_super_admin && (int) $user->department_id !== (int) $category->id) {
             return redirect()
                 ->route('admin.categories.index')
                 ->with('error', 'You can only update your own department.');
@@ -104,13 +104,13 @@ class CategoryController extends Controller
 
         return redirect()
             ->route('admin.categories.index')
-            ->with('success', 'Category updated successfully.');
+            ->with('success', 'Department updated successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category)
+    public function destroy(Department $category)
     {
         $user = request()->user();
         if (! $user || ! $user->is_super_admin) {
@@ -123,7 +123,7 @@ class CategoryController extends Controller
 
         return redirect()
             ->route('admin.categories.index')
-            ->with('success', 'Category deleted successfully.');
+            ->with('success', 'Department deleted successfully.');
     }
 }
 

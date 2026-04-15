@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Category;
+use App\Models\Department;
 use App\Models\Doctor;
 use Illuminate\Database\Seeder;
 
@@ -20,7 +20,7 @@ class CategoryDoctorSeeder extends Seeder
 
         $categoryIds = [];
         foreach ($categories as $name) {
-            $category = Category::query()->updateOrCreate(
+            $category = Department::query()->updateOrCreate(
                 ['name' => $name],
                 ['description' => null, 'is_active' => true]
             );
@@ -39,7 +39,7 @@ class CategoryDoctorSeeder extends Seeder
             Doctor::query()->updateOrCreate(
                 ['email' => $doc['email']],
                 [
-                    'category_id' => $categoryIds[$doc['category']],
+                    'department_id' => $categoryIds[$doc['category']],
                     'name' => $doc['name'],
                     'phone' => null,
                     'room_number' => null,

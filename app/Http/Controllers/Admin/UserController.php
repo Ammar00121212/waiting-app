@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
+use App\Models\Department;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -13,7 +13,7 @@ class UserController extends Controller
     public function index()
     {
         $users = User::query()
-            ->with('category')
+            ->with('department')
             ->orderBy('name')
             ->paginate(15);
 
@@ -22,7 +22,7 @@ class UserController extends Controller
 
     public function create()
     {
-        $categories = Category::query()->orderBy('name')->get(['id', 'name']);
+        $categories = Department::query()->orderBy('name')->get(['id', 'name']);
 
         return view('admin.users.create', compact('categories'));
     }
@@ -33,26 +33,26 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'category_id' => ['nullable', 'exists:categories,id'],
+            'department_id' => ['nullable', 'exists:departments,id'],
             'is_super_admin' => ['nullable', 'boolean'],
         ]);
 
         $isSuper = (bool) ($request->user()?->is_super_admin);
         $isSuperAdmin = $isSuper ? $request->boolean('is_super_admin') : false;
-        $categoryId = $data['category_id'] ?? null;
+        $departmentId = $data['department_id'] ?? null;
 
         // If not super admin, force department-scoped users only.
         if (! $isSuper) {
-            $categoryId = $request->user()->category_id;
+            $departmentId = $request->user()->department_id;
         }
 
         // Super admins are global (no department restriction).
         if ($isSuperAdmin) {
-            $categoryId = null;
+            $departmentId = null;
         }
 
         User::create([
-            'category_id' => $categoryId,
+            'department_id' => $departmentId,
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
@@ -66,7 +66,7 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        $categories = Category::query()->orderBy('name')->get(['id', 'name']);
+        $categories = Department::query()->orderBy('name')->get(['id', 'name']);
 
         return view('admin.users.edit', compact('user', 'categories'));
     }
@@ -77,26 +77,26 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$user->id],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
-            'category_id' => ['nullable', 'exists:categories,id'],
+            'department_id' => ['nullable', 'exists:departments,id'],
             'is_super_admin' => ['nullable', 'boolean'],
         ]);
 
         $isSuper = (bool) ($request->user()?->is_super_admin);
         $isSuperAdmin = $isSuper ? $request->boolean('is_super_admin') : (bool) $user->is_super_admin;
 
-        $categoryId = $data['category_id'] ?? $user->category_id;
+        $departmentId = $data['department_id'] ?? $user->department_id;
         if (! $isSuper) {
             // Non-super admins can only manage users in their department.
             $isSuperAdmin = false;
-            $categoryId = $request->user()->category_id;
+            $departmentId = $request->user()->department_id;
         }
         if ($isSuperAdmin) {
-            $categoryId = null;
+            $departmentId = null;
         }
 
         $user->name = $data['name'];
         $user->email = $data['email'];
-        $user->category_id = $categoryId;
+        $user->department_id = $departmentId;
         $user->is_super_admin = $isSuperAdmin;
         if (! empty($data['password'])) {
             $user->password = Hash::make($data['password']);
