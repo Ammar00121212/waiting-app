@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
+use App\Models\Department;
 use App\Models\Doctor;
 use App\Models\Patient;
 use Carbon\Carbon;
@@ -17,7 +17,7 @@ class PatientCheckInController extends Controller
 {
     public function create(): View
     {
-        $categories = Category::query()
+        $categories = Department::query()
             ->where('is_active', true)
             ->orderBy('name')
             ->get(['id', 'name']);
@@ -31,7 +31,7 @@ class PatientCheckInController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:50'],
             'email' => ['nullable', 'string', 'email', 'max:255'],
-            'category_id' => ['required', 'exists:categories,id'],
+            'department_id' => ['required', 'exists:departments,id'],
             'doctor_id' => ['required', 'exists:doctors,id'],
         ]);
 
@@ -51,24 +51,24 @@ class PatientCheckInController extends Controller
 
         $doctor = Doctor::query()
             ->where('id', $data['doctor_id'])
-            ->where('category_id', $data['category_id'])
+            ->where('department_id', $data['department_id'])
             ->where('is_active', true)
             ->first();
 
         if ($doctor === null) {
             throw ValidationException::withMessages([
-                'doctor_id' => __('Please select an available doctor for the chosen category.'),
+                'doctor_id' => __('Please select an available doctor for the chosen department.'),
             ]);
         }
 
-        $category = Category::query()
-            ->where('id', $data['category_id'])
+        $department = Department::query()
+            ->where('id', $data['department_id'])
             ->where('is_active', true)
             ->first();
 
-        if ($category === null) {
+        if ($department === null) {
             throw ValidationException::withMessages([
-                'category_id' => __('Please select a valid category.'),
+                'department_id' => __('Please select a valid department.'),
             ]);
         }
 
@@ -88,7 +88,7 @@ class PatientCheckInController extends Controller
             'patient_name' => $data['name'],
             'email' => $data['email'] ?? null,
             'phone' => $data['phone'] ?? null,
-            'category_id' => $category->id,
+            'department_id' => $department->id,
             'doctor_id' => $doctor->id,
             'status' => 'waiting',
             'token_number' => $tokenNumber,
@@ -106,7 +106,7 @@ class PatientCheckInController extends Controller
             abort(404);
         }
 
-        $patient->load(['doctor', 'category']);
+        $patient->load(['doctor', 'department']);
 
         $estimatedMinutes = null;
         if (($patient->status ?? 'waiting') === 'waiting' && $patient->doctor_id) {
@@ -127,7 +127,7 @@ class PatientCheckInController extends Controller
             abort(404);
         }
 
-        $patient->load(['doctor', 'category']);
+        $patient->load(['doctor', 'department']);
 
         $estimatedMinutes = null;
         if ((($patient->status ?? 'waiting') === 'waiting') && $patient->doctor_id) {
@@ -144,9 +144,9 @@ class PatientCheckInController extends Controller
                 'id' => $patient->doctor->id,
                 'name' => $patient->doctor->name,
             ] : null,
-            'category' => $patient->category ? [
-                'id' => $patient->category->id,
-                'name' => $patient->category->name,
+            'department' => $patient->department ? [
+                'id' => $patient->department->id,
+                'name' => $patient->department->name,
             ] : null,
             'updated_at' => optional($patient->updated_at)?->toIso8601String(),
         ]);
@@ -159,7 +159,7 @@ class PatientCheckInController extends Controller
             abort(404);
         }
 
-        $patient->load(['doctor', 'category']);
+        $patient->load(['doctor', 'department']);
 
         $estimatedMinutes = null;
         if ((($patient->status ?? 'waiting') === 'waiting') && $patient->doctor_id) {
@@ -177,10 +177,10 @@ class PatientCheckInController extends Controller
         return $pdf->download($filename);
     }
 
-    public function doctorsByCategory(Category $category)
+    public function doctorsByCategory(Department $category)
     {
         $doctors = Doctor::query()
-            ->where('category_id', $category->id)
+            ->where('department_id', $category->id)
             ->where('is_active', true)
             ->orderBy('name')
             ->get(['id', 'name', 'availability']);
