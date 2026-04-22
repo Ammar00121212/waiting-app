@@ -142,6 +142,68 @@ body{
   letter-spacing: .10em;
 }
 
+/* Patient registration form polish */
+.wa-hero-subtitle{
+  max-width: 44rem;
+}
+.wa-glass{
+  background: rgba(255,255,255,0.72);
+  border: 1px solid rgba(255,255,255,0.55);
+  backdrop-filter: blur(10px);
+}
+.wa-form-section{
+  padding: 16px;
+  border-radius: var(--wa-radius-lg);
+  border: 1px solid var(--wa-border);
+  background: rgba(255,255,255,0.74);
+}
+@media (min-width: 768px){
+  .wa-form-section{ padding: 18px; }
+}
+.wa-form-section-title{
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+.wa-form-section-hint{
+  color: var(--wa-muted);
+  font-size: .88rem;
+}
+.wa-label{
+  font-weight: 800;
+  letter-spacing: .01em;
+}
+.wa-required{
+  color: var(--wa-danger);
+  font-weight: 900;
+}
+.wa-input, .wa-select{
+  padding-top: .82rem;
+  padding-bottom: .82rem;
+}
+.wa-input::placeholder{
+  color: rgba(100,116,139,0.85);
+}
+.wa-btn-primary{
+  position: relative;
+  overflow: hidden;
+}
+.wa-btn-primary::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(520px 180px at 20% 0%, rgba(255,255,255,0.20) 0%, rgba(255,255,255,0) 55%);
+  pointer-events: none;
+}
+.wa-kbd{
+  font-size: .78rem;
+  border: 1px solid var(--wa-border);
+  background: rgba(255,255,255,0.75);
+  padding: 2px 8px;
+  border-radius: 10px;
+  color: var(--wa-muted);
+  font-weight: 800;
+}
+
 /* Sidebar (admin console) */
 .wa-sidebar{
   background: linear-gradient(180deg, #0b1220 0%, #111b34 50%, #0b1220 100%) !important;

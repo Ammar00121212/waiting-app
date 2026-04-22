@@ -13,7 +13,7 @@
 </head>
 <body class="wa-page">
     <div class="container px-3 py-4 py-md-5 wa-container">
-        <div class="wa-card wa-card-hero">
+        <div class="wa-card wa-card-hero wa-glass">
             <div class="card-body p-4 p-md-5">
                 <div class="d-flex align-items-start justify-content-between gap-3 mb-4">
                     <div class="d-flex align-items-center">
@@ -25,7 +25,9 @@
                                 No login required
                             </div>
                             <h1 class="h4 mb-1">Patient registration</h1>
-                            <div class="text-muted small">Select a department and doctor, then get your token instantly.</div>
+                            <div class="text-muted small wa-hero-subtitle">
+                                Fill in your details, choose a department and doctor, then get your token instantly.
+                            </div>
                         </div>
                     </div>
                     <div class="d-none d-md-flex gap-2">
@@ -39,83 +41,118 @@
                 <form method="POST" action="{{ $submitRoute }}" novalidate>
                     @csrf
 
-                    <div class="form-group">
-                        <label for="name">Name <span class="text-danger">*</span></label>
-                        <input id="name"
-                               type="text"
-                               name="name"
-                               class="form-control wa-input @error('name') is-invalid @enderror"
-                               value="{{ old('name') }}"
-                               required
-                               autocomplete="name"
-                               autofocus>
-                        @error('name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+                    @if ($errors->any())
+                        <div class="alert alert-danger border-0 shadow-sm wa-radius-lg">
+                            <div class="font-weight-700 mb-1">Please fix the highlighted fields</div>
+                            <div class="small mb-0">Your token will be generated once the form is valid.</div>
+                        </div>
+                    @endif
 
-                    <div class="form-group">
-                        <label for="category_id">Department <span class="text-danger">*</span></label>
-                        <select id="category_id"
-                                name="category_id"
-                                class="form-control wa-select @error('category_id') is-invalid @enderror"
-                                required>
-                            <option value="" disabled {{ old('category_id') ? '' : 'selected' }}>Select a department</option>
-                            @foreach ($categories as $category)
-                                <option value="{{ $category->id }}" {{ (string) old('category_id') === (string) $category->id ? 'selected' : '' }}>
-                                    {{ $category->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('category_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="form-group">
-                        <label for="doctor_id">Doctor <span class="text-danger">*</span></label>
-                        <select id="doctor_id"
-                                name="doctor_id"
-                                class="form-control wa-select @error('doctor_id') is-invalid @enderror"
-                                required
-                                disabled>
-                            <option value="" selected disabled>Select a department first</option>
-                        </select>
-                        @error('doctor_id')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
-                        @enderror
-                        <small id="doctorHelp" class="form-text text-muted d-none"></small>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                        <label for="phone">Phone <span class="text-muted font-weight-normal">(optional)</span></label>
-                        <input id="phone"
-                               type="text"
-                               name="phone"
-                               class="form-control wa-input @error('phone') is-invalid @enderror"
-                               value="{{ old('phone') }}"
-                               autocomplete="tel">
-                        @error('phone')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                    <div class="wa-form-section mb-3">
+                        <div class="d-flex align-items-start justify-content-between flex-wrap gap-2 mb-3">
+                            <div>
+                                <div class="wa-form-section-title">Your details</div>
+                                <div class="wa-form-section-hint">These help the clinic identify you.</div>
+                            </div>
+                            <div class="d-none d-md-flex align-items-center gap-2">
+                                <span class="wa-kbd">Secure</span>
+                                <span class="wa-kbd">Fast</span>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-0">
+                                    <label class="wa-label" for="name">Name <span class="wa-required">*</span></label>
+                                    <input id="name"
+                                           type="text"
+                                           name="name"
+                                           class="form-control wa-input @error('name') is-invalid @enderror"
+                                           value="{{ old('name') }}"
+                                           required
+                                           placeholder="Enter your full name"
+                                           autocomplete="name"
+                                           autofocus>
+                                    @error('name')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6 mt-3 mt-md-0">
+                                <div class="form-group mb-0">
+                                    <label class="wa-label" for="phone">Phone <span class="text-muted font-weight-normal">(optional)</span></label>
+                                    <input id="phone"
+                                           type="text"
+                                           name="phone"
+                                           class="form-control wa-input @error('phone') is-invalid @enderror"
+                                           value="{{ old('phone') }}"
+                                           placeholder="e.g., 0300 123 4567"
+                                           autocomplete="tel">
+                                    @error('phone')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <div class="form-group mb-0">
+                                    <label class="wa-label" for="email">Email <span class="text-muted font-weight-normal">(optional)</span></label>
+                                    <input id="email"
+                                           type="email"
+                                           name="email"
+                                           class="form-control wa-input @error('email') is-invalid @enderror"
+                                           value="{{ old('email') }}"
+                                           placeholder="name@example.com"
+                                           autocomplete="email">
+                                    @error('email')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                    <small class="form-text text-muted">If provided, we prevent duplicate registrations today.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                        <div class="col-md-6">
-                            <div class="form-group">
-                        <label for="email">Email <span class="text-muted font-weight-normal">(optional)</span></label>
-                        <input id="email"
-                               type="email"
-                               name="email"
-                               class="form-control wa-input @error('email') is-invalid @enderror"
-                               value="{{ old('email') }}"
-                               autocomplete="email">
-                        @error('email')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                                <small class="form-text text-muted">If provided, we prevent duplicate registrations today.</small>
+                    <div class="wa-form-section mb-3">
+                        <div class="mb-3">
+                            <div class="wa-form-section-title">Choose where to go</div>
+                            <div class="wa-form-section-hint">Select a department and available doctor.</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-0">
+                                    <label class="wa-label" for="category_id">Department <span class="wa-required">*</span></label>
+                                    <select id="category_id"
+                                            name="category_id"
+                                            class="form-control wa-select @error('category_id') is-invalid @enderror"
+                                            required>
+                                        <option value="" disabled {{ old('category_id') ? '' : 'selected' }}>Select a department</option>
+                                        @foreach ($categories as $category)
+                                            <option value="{{ $category->id }}" {{ (string) old('category_id') === (string) $category->id ? 'selected' : '' }}>
+                                                {{ $category->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('category_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-md-6 mt-3 mt-md-0">
+                                <div class="form-group mb-0">
+                                    <label class="wa-label" for="doctor_id">Doctor <span class="wa-required">*</span></label>
+                                    <select id="doctor_id"
+                                            name="doctor_id"
+                                            class="form-control wa-select @error('doctor_id') is-invalid @enderror"
+                                            required
+                                            disabled>
+                                        <option value="" selected disabled>Select a department first</option>
+                                    </select>
+                                    @error('doctor_id')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                    <small id="doctorHelp" class="form-text text-muted d-none"></small>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -123,6 +160,7 @@
                     <div class="d-flex flex-column flex-sm-row gap-2 justify-content-between align-items-stretch align-items-sm-center mt-4">
                         <button type="submit" class="btn wa-btn wa-btn-primary btn-lg flex-grow-1">
                             <i class="fas fa-ticket-simple mr-2"></i>Get my token
+                            <span class="d-none d-md-inline ml-2 wa-kbd">Enter</span>
                         </button>
                         <a class="btn wa-btn wa-btn-ghost btn-lg d-md-none" href="{{ route('staff.login') }}">
                             <i class="fas fa-arrow-right-to-bracket mr-2"></i>Admin console
