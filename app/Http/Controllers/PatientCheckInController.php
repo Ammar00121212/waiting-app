@@ -31,9 +31,13 @@ class PatientCheckInController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:50'],
             'email' => ['nullable', 'string', 'email', 'max:255'],
-            'department_id' => ['required', 'exists:departments,id'],
+            // The registration form submits "category_id" (legacy naming),
+            // but the database + models use "departments".
+            'category_id' => ['required', 'exists:departments,id'],
             'doctor_id' => ['required', 'exists:doctors,id'],
         ]);
+
+        $departmentId = (int) $data['category_id'];
 
         // Prevent duplicate joins on the same day for the same email (when provided).
         if (! empty($data['email'])) {
@@ -51,7 +55,7 @@ class PatientCheckInController extends Controller
 
         $doctor = Doctor::query()
             ->where('id', $data['doctor_id'])
-            ->where('department_id', $data['department_id'])
+            ->where('department_id', $departmentId)
             ->where('is_active', true)
             ->first();
 
@@ -62,13 +66,13 @@ class PatientCheckInController extends Controller
         }
 
         $department = Department::query()
-            ->where('id', $data['department_id'])
+            ->where('id', $departmentId)
             ->where('is_active', true)
             ->first();
 
         if ($department === null) {
             throw ValidationException::withMessages([
-                'department_id' => __('Please select a valid department.'),
+                'category_id' => __('Please select a valid department.'),
             ]);
         }
 
