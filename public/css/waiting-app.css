@@ -204,6 +204,32 @@ body{
   font-weight: 800;
 }
 
+/* Compact public pages (used by patient registration) */
+.wa-compact .wa-hero-icon{
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+}
+.wa-compact .wa-form-section{
+  padding: 12px;
+}
+@media (min-width: 768px){
+  .wa-compact .wa-form-section{ padding: 14px; }
+}
+.wa-compact .wa-form-section-hint{
+  font-size: .84rem;
+}
+.wa-compact .wa-input,
+.wa-compact .wa-select{
+  padding-top: .66rem;
+  padding-bottom: .66rem;
+}
+.wa-compact .btn-lg{
+  padding-top: .72rem;
+  padding-bottom: .72rem;
+  font-size: 1rem;
+}
+
 /* Sidebar (admin console) */
 .wa-sidebar{
   background: linear-gradient(180deg, #0b1220 0%, #111b34 50%, #0b1220 100%) !important;

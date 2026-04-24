@@ -11,11 +11,11 @@
     <link rel="stylesheet" href="{{ asset('assets/css/style.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/waiting-app.css') }}">
 </head>
-<body class="wa-page">
-    <div class="container px-3 py-4 py-md-5 wa-container">
+<body class="wa-page wa-compact">
+    <div class="container px-3 py-3 py-md-4 wa-container">
         <div class="wa-card wa-card-hero wa-glass">
-            <div class="card-body p-4 p-md-5">
-                <div class="d-flex align-items-start justify-content-between gap-3 mb-4">
+            <div class="card-body p-3 p-md-4">
+                <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
                     <div class="d-flex align-items-center">
                         <div class="wa-hero-icon wa-hero-icon-patient mr-3">
                             <i class="fas fa-clipboard-check"></i>
@@ -48,15 +48,11 @@
                         </div>
                     @endif
 
-                    <div class="wa-form-section mb-3">
+                <div class="wa-form-section mb-2">
                         <div class="d-flex align-items-start justify-content-between flex-wrap gap-2 mb-3">
                             <div>
                                 <div class="wa-form-section-title">Your details</div>
                                 <div class="wa-form-section-hint">These help the clinic identify you.</div>
-                            </div>
-                            <div class="d-none d-md-flex align-items-center gap-2">
-                                <span class="wa-kbd">Secure</span>
-                                <span class="wa-kbd">Fast</span>
                             </div>
                         </div>
                         <div class="row">
@@ -93,7 +89,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row mt-3">
+                        <div class="row mt-2">
                             <div class="col-md-12">
                                 <div class="form-group mb-0">
                                     <label class="wa-label" for="email">Email <span class="text-muted font-weight-normal">(optional)</span></label>
@@ -107,16 +103,14 @@
                                     @error('email')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
-                                    <small class="form-text text-muted">If provided, we prevent duplicate registrations today.</small>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="wa-form-section mb-3">
-                        <div class="mb-3">
+                <div class="wa-form-section mb-2">
+                    <div class="mb-2">
                             <div class="wa-form-section-title">Choose where to go</div>
-                            <div class="wa-form-section-hint">Select a department and available doctor.</div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
@@ -159,8 +153,7 @@
 
                     <div class="d-flex flex-column flex-sm-row gap-2 justify-content-between align-items-stretch align-items-sm-center mt-4">
                         <button type="submit" class="btn wa-btn wa-btn-primary btn-lg flex-grow-1">
-                            <i class="fas fa-ticket-simple mr-2"></i>Get my token
-                            <span class="d-none d-md-inline ml-2 wa-kbd">Enter</span>
+                            <i class="fas fa-ticket-simple mr-2"></i>Generate token
                         </button>
                         <a class="btn wa-btn wa-btn-ghost btn-lg d-md-none" href="{{ route('staff.login') }}">
                             <i class="fas fa-arrow-right-to-bracket mr-2"></i>Admin console
@@ -169,7 +162,7 @@
                 </form>
             </div>
         </div>
-        <div class="text-center text-muted small mt-3">
+        <div class="text-center text-muted small mt-2">
             You’ll receive a token and can track your estimated wait time.
         </div>
     </div>
@@ -203,8 +196,8 @@
 
                 doctorEl.disabled = doctors.length === 0;
                 if (doctors.length) {
-                    doctorHelp.classList.remove('d-none');
-                    doctorHelp.textContent = 'Availability shown when provided.';
+                    doctorHelp.classList.add('d-none');
+                    doctorHelp.textContent = '';
                 } else {
                     doctorHelp.classList.add('d-none');
                     doctorHelp.textContent = '';
