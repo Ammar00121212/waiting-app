@@ -56,11 +56,6 @@
                                 <i class="fas fa-clipboard-list mr-1"></i>Patient registration
                             </a>
                         </li>
-                        <li class="nav-item d-flex align-items-center mr-lg-3">
-                            <span class="badge badge-light wa-pill px-3 py-2">
-                                <i class="fas fa-user-gear mr-1"></i>{{ Auth::user()->name ?? 'Admin' }}
-                            </span>
-                        </li>
                         <li class="nav-item">
                             <form method="POST" action="{{ route('staff.logout') }}" class="m-0">
                                 @csrf
